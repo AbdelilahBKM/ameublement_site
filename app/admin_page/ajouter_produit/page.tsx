@@ -395,7 +395,7 @@ export default function AjouterProduit() {
                         className="w-full justify-start text-left font-normal"
                       >
                         <CalendarDaysIcon className="mr-2 h-full w-4" />
-                        Date d'Expiration
+                        Date d&apos;Expiration
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">

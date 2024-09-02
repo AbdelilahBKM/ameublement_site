@@ -166,7 +166,7 @@ export default function Component() {
           {isLoading ? (
             <LoadingProducts />
           ) : (
-            relatedProducts.map((prod) => <ProductCard product={prod} />)
+            relatedProducts.map((prod) => <ProductCard key={prod.id} product={prod} />)
           )}
           {!isLoading && relatedProducts.length === 0 && <NoProduct />}
         </div>

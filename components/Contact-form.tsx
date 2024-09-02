@@ -17,13 +17,14 @@ import { Button } from "@/components/ui/button";
 import { FormEvent, useState } from "react";
 import { AlertCircle, X } from "lucide-react";
 import { DOMAIN_NAME } from "@/utils/app_variables";
-
-
+import { Combobox } from "./ui/ComboBox";
+import PhoneNumberInput from "./ui/phoneInput";
 
 export default function ContactForm() {
   const [nom, setNom] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string | undefined>(undefined);
+  const [selectedCountry, setSelectedCountry] = useState("");
   const [message, setMessage] = useState<string>("");
   const [erreur, setErreur] = useState<string>("");
   const [notification, setNotification] = useState<string>("");
@@ -34,33 +35,39 @@ export default function ContactForm() {
     setIsLoading(true);
     setErreur("");
     setNotification("");
-  
-    if (nom && email && message) {
+
+    if (nom && email && message && selectedCountry && phoneNumber) {
       try {
         const response = await fetch(`${DOMAIN_NAME}/api/contact`, {
           method: "POST",
           headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            nom_client: nom,        
+            nom_client: nom,
             email_client: email,
             message_client: message,
+            numero_tel: phoneNumber,
+            pays: selectedCountry,
           }),
         });
-  
+
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.errors[0] || "Error while sending contact info");
+          throw new Error(
+            errorData.errors[0] || "Error while sending contact info"
+          );
         }
-  
+
         setNotification(
           "Merci de nous avoir contactés, nous vous répondrons dans les plus brefs délais."
         );
         setNom("");
         setEmail("");
         setMessage("");
+        setSelectedCountry("");
+        setPhoneNumber("");
       } catch (error: any) {
         console.error("Erreur:", error);
         setErreur(
@@ -69,12 +76,19 @@ export default function ContactForm() {
       } finally {
         setIsLoading(false);
       }
+
+      console.log(
+        "nom et prenom: " + nom,
+        "email: " + email,
+        "contrie: " + selectedCountry,
+        "phone: " + phoneNumber,
+        "message: " + message
+      );
     } else {
       setErreur("Tous les champs sont obligatoires");
       setIsLoading(false);
     }
   };
-  
 
   return (
     <div className="flex  flex-col">
@@ -140,6 +154,26 @@ export default function ContactForm() {
                         />
                       </div>
                     </div>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div className="grid gap-2">
+                        <Label htmlFor="pays">Pays</Label>
+                        <Combobox
+                          value={selectedCountry}
+                          onChange={setSelectedCountry}
+                          regions={[]}
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="phone">Numéro de téléphone</Label>
+                        <div className="relative">
+                          <PhoneNumberInput
+                            value={phoneNumber}
+                            onChange={setPhoneNumber}
+                            errorMessage={erreur}
+                          />
+                        </div>
+                      </div>
+                    </div>
                     <div className="grid gap-2">
                       <Label htmlFor="message">Message</Label>
                       <Textarea
@@ -150,10 +184,7 @@ export default function ContactForm() {
                       />
                     </div>
                     {erreur && (
-                      <Alert
-                        variant="destructive"
-                        className="block"
-                      >
+                      <Alert variant="destructive" className="block">
                         <AlertCircle className="h-4 w-4" />
                         <AlertTitle>Erreur:</AlertTitle>
                         <AlertDescription>{erreur}</AlertDescription>
@@ -172,8 +203,13 @@ export default function ContactForm() {
             </div>
 
             <div className="order-2 md:order-1">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d849.0196527869554!2d-7.99319772764631!3d31.659068979496006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xdafedd842eafe55%3A0x97bd5f78fe0b75bc!2sAkram%20Ameublement!5e0!3m2!1sen!2sma!4v1723558484209!5m2!1sen!2sma" className="w-full h-[400px] md:h-[600px] border" width="800"   loading="lazy" referrerPolicy="no-referrer-when-downgrade">
-              </iframe>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d849.0196527869554!2d-7.99319772764631!3d31.659068979496006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xdafedd842eafe55%3A0x97bd5f78fe0b75bc!2sAkram%20Ameublement!5e0!3m2!1sen!2sma!4v1723558484209!5m2!1sen!2sma"
+                className="w-full h-[400px] md:h-[600px] border"
+                width="800"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
           </div>
         </section>

@@ -229,7 +229,7 @@ export default function Component() {
                         <TableHead>Description</TableHead>
                         <TableHead>Prix de base</TableHead>
                         <TableHead>Prix actuel</TableHead>
-                        <TableHead>date d'expiration Solde</TableHead>
+                        <TableHead>date d&apos;expiration Solde</TableHead>
                         <TableHead>Categories</TableHead>
                         <TableHead>
                           <span className="sr-only">Actions</span>

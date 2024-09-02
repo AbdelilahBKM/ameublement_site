@@ -127,7 +127,7 @@ export default function Component() {
           </NavigationMenuList>
         </NavigationMenu>
         <Link
-          href="#"
+          href="/#about-us"
           className="text-[14px] text-black font-[600] hover:underline"
           prefetch={false}
         >
@@ -179,7 +179,7 @@ export default function Component() {
                 {listCategories.map((categorie) => (
                   <div key={categorie.id}>
                     <Link
-                      href="/"
+                      href={`/${categorie.nom_categorie}`} 
                       className="text-[14px] text-black font-[600] hover:underline"
                       onClick={() => setIsMenuOpen(false)}
                       prefetch={false}
@@ -190,7 +190,7 @@ export default function Component() {
                       {categorie.children.map((sub) => (
                         <Link
                           key={sub.id}
-                          href="#"
+                          href={`/${categorie.nom_categorie}/${sub.nom_categorie}`}
                           className="text-[14px] text-slate-700 font-medium hover:underline"
                           onClick={() => setIsMenuOpen(false)}
                           prefetch={false}
@@ -227,43 +227,3 @@ export default function Component() {
   );
 }
 
-function MountainIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
-    </svg>
-  );
-}
-
-function XIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M18 6 6 18" />
-      <path d="m6 6 12 12" />
-    </svg>
-  );
-}

@@ -119,7 +119,7 @@ const Page = () => {
                 {listProduits.length > 0 ? (
                   <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {listProduits.map((produit) => (
-                      <ProductCard product={produit} />
+                      <ProductCard key={produit.id} product={produit} />
                     ))}
                   </div>
                 ) :  (

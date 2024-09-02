@@ -34,11 +34,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DOMAIN_NAME } from "@/utils/app_variables";
-import {loadAuthState} from "@/store/authReducer";
+import { loadAuthState } from "@/store/authReducer";
 
 export default function Liste_des_messages() {
   const dispatch = useDispatch();
-  dispatch(loadAuthState());
   const isAuth = useSelector((state: RootState) => state.auth.isAuthenticated);
   const api_token = useSelector((state: RootState) => state.auth.token);
   const [listMessage, setListMessages] = useState<Messages[]>([]);
@@ -46,6 +45,10 @@ export default function Liste_des_messages() {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [sortAsc, setSortAsc] = useState<boolean>(false);
   const router = useRouter();
+
+  useEffect(() => {
+    dispatch(loadAuthState()); // Load auth state once on component mount
+  }, [dispatch]);
 
   useEffect(() => {
     if (!isAuth || api_token === "") {
@@ -63,7 +66,7 @@ export default function Liste_des_messages() {
         });
         if (!response.ok) {
           throw new Error(
-            "une erreur s'est produite lors de la récupération des données de contact"
+            "Une erreur s'est produite lors de la récupération des données de contact"
           );
         }
         const data: Messages[] = await response.json();
@@ -72,8 +75,9 @@ export default function Liste_des_messages() {
         console.error(error);
       }
     };
+
     getAllMessage();
-  }, [isAuth, api_token, refresh]);
+  }, [isAuth, api_token, refresh, router]);
 
   const filteredMessages = listMessage.filter(
     (message) =>
@@ -98,14 +102,40 @@ export default function Liste_des_messages() {
         },
       });
       if (!response.ok) {
-        throw new Error("message not deleted");
+        throw new Error("Message non supprimé");
       }
       setRefresh((prev) => !prev);
     } catch (error) {
       console.error(error);
     }
   };
-
+  const handleUpdate = async (id: number) => {
+    try {
+      const response = await fetch(`${DOMAIN_NAME}/api/contact/${id}`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${api_token}`,
+        },
+        body: JSON.stringify({
+          is_new: false,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Message non modifier");
+      }
+      const newList = listMessage.map((msg) => {
+        if (msg.id === id) {
+          return { ...msg, is_new: false };
+        }
+        return msg;
+      });
+      setListMessages(newList);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <section className="flex items-start justify-center bg-slate-100 min-h-screen pt-[125px]">
       <Card className="w-full mx-7 my-12">
@@ -119,7 +149,7 @@ export default function Liste_des_messages() {
           <h1 className="text-slate-700">Rechercher un Message Spécifique:</h1>
           <Input
             type="search"
-            placeholder="recherchez"
+            placeholder="Recherchez"
             className="w-[453px]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -139,6 +169,8 @@ export default function Liste_des_messages() {
               <TableRow>
                 <TableHead>Nom</TableHead>
                 <TableHead>Email</TableHead>
+                <TableHead>Numéro de téléphone</TableHead>
+                <TableHead>Pays</TableHead>
                 <TableHead>Message</TableHead>
                 <TableHead
                   className="flex gap-2 items-center cursor-pointer"
@@ -157,12 +189,22 @@ export default function Liste_des_messages() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedMessages.map((message, index) => (
-                <TableRow key={index}>
+              {sortedMessages.map((message) => (
+                <TableRow
+                  key={message.id}
+                  onClick={message.is_new ? () => handleUpdate(message.id) : () => {}}
+                  className={
+                    message.is_new
+                      ? "bg-red-100 hover:bg-red-50 cursor-pointer"
+                      : ""
+                  }
+                >
                   <TableCell className="font-medium">
                     {message.nom_client}
                   </TableCell>
                   <TableCell>{message.email_client}</TableCell>
+                  <TableCell>{message.numero_tel}</TableCell>
+                  <TableCell>{message.pays}</TableCell>
                   <TableCell>{message.message_client}</TableCell>
                   <TableCell>
                     {new Date(message.created_at).toLocaleDateString()}
