@@ -56,7 +56,7 @@ export default function Component() {
     <header className="flex items-center justify-between py-7 px-4 bg-white md:px-6 w-full shadow-lg relative z-20">
       <Link href="/" className="flex items-center gap-2" prefetch={false}>
         <Image src={"/akram-logo.png"} alt="" width={50} height={32} />
-        <span className="text-2xl font-semibold">Akram</span>
+        <span className="text-2xl font-semibold">Ameublement</span>
       </Link>
 
       <nav className="hidden lg:flex md:flex-wrap items-center gap-6 text-base font-semibold">

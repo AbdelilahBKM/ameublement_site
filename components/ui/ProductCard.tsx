@@ -49,8 +49,8 @@ const ProductCard: React.FC<{ product: Produits }> = ({ product }) => {
         <div className="flex justify-between mb-4">
           <h3 className="text-lg font-semibold">{product.nom_produit}</h3>
           {product.en_promotion == true && (
-            <Badge variant={"secondary"} className="text-red-400">
-              {product.remise}% OFF
+            <Badge variant={"secondary"} className="text-red-400 line-through">
+              {product.remise}%
             </Badge>
           )}
         </div>

@@ -254,7 +254,7 @@ export default function Component() {
                           <TableCell>{prod.description}</TableCell>
                           <TableCell>
                             MAD {prod.prix}{" "}
-                            {prod.en_promotion && (
+                            {prod.en_promotion == true && (
                               <span className="text-red-600">
                                 {" "}
                                 -{prod.remise}%
